@@ -9,9 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 const _sec0SessionResponse = [0x52, 0x05, 0x08, 0x01, 0xaa, 0x01, 0x00];
 
 final class _FakeTransport implements ProvTransport {
-  new(this.protoVer);
+  new(this.protoVer, {this.disconnectThrows = false});
 
   final String protoVer;
+  final bool disconnectThrows;
   int disconnects = 0;
 
   @override
@@ -21,7 +22,10 @@ final class _FakeTransport implements ProvTransport {
   Stream<void> get onDisconnected => const Stream.empty();
 
   @override
-  Future<void> disconnect() async => disconnects++;
+  Future<void> disconnect() async {
+    disconnects++;
+    if (disconnectThrows) throw const TransportException('link dropped');
+  }
 
   @override
   Future<Uint8List> send(String endpoint, Uint8List request) async =>
@@ -92,6 +96,13 @@ void main() {
 
   test('a failed connect closes the link', () async {
     final transport = _FakeTransport(sec2);
+    final device = EspDevice(_FakeDevice('PROV_1', transport));
+    await expectLater(device.connect(), throwsA(isA<MissingCredentials>()));
+    expect(transport.disconnects, 1);
+  });
+
+  test('a failing cleanup disconnect keeps the original error', () async {
+    final transport = _FakeTransport(sec2, disconnectThrows: true);
     final device = EspDevice(_FakeDevice('PROV_1', transport));
     await expectLater(device.connect(), throwsA(isA<MissingCredentials>()));
     expect(transport.disconnects, 1);

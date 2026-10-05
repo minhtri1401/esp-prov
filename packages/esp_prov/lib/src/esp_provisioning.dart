@@ -31,10 +31,6 @@ final class EspProvisioning {
       if (!found.isCompleted) found.completeError(error);
     }
 
-    final timer = Timer(
-      timeout,
-      () => fail(TransportException('Device "$name" not found in $timeout.')),
-    );
     final subscription = scan(namePrefix: name).listen(
       (device) {
         if (device.name.toLowerCase() == wanted && !found.isCompleted) {
@@ -44,6 +40,10 @@ final class EspProvisioning {
       onError: fail,
       onDone: () =>
           fail(TransportException('Scan ended before "$name" was found.')),
+    );
+    final timer = Timer(
+      timeout,
+      () => fail(TransportException('Device "$name" not found in $timeout.')),
     );
     try {
       return await found.future;
@@ -81,7 +81,11 @@ final class EspDevice {
     try {
       return await EspSession.open(transport, credentials: credentials);
     } on Object {
-      await transport.disconnect();
+      try {
+        await transport.disconnect();
+      } on Object {
+        // Best effort: the original error wins.
+      }
       rethrow;
     }
   }
