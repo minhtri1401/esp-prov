@@ -1,0 +1,26 @@
+name: esp_prov_example
+description: Example app for esp_prov. Scans, connects, provisions Wi-Fi.
+publish_to: none
+version: 1.0.0+1
+
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  esp_prov: ^0.1.0
+  flutter:
+    sdk: flutter
+  universal_ble: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  very_good_analysis: ^11.0.0
+
+flutter:
+  uses-material-design: true
