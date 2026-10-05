@@ -59,4 +59,29 @@ void main() {
     );
     expect(info.secVer, 2);
   });
+
+  test('truncated JSON throws FormatException', () {
+    expect(
+      () => DeviceInfo.parse('{"prov":{"ver":"v1.1"'),
+      throwsFormatException,
+    );
+  });
+
+  test('JSON without prov throws FormatException', () {
+    expect(
+      () => DeviceInfo.parse('{"myapp":{"ver":"1"}}'),
+      throwsFormatException,
+    );
+  });
+
+  test('prov that is not a map throws FormatException', () {
+    expect(() => DeviceInfo.parse('{"prov":"v1.1"}'), throwsFormatException);
+  });
+
+  test('legacy plain string strips trailing NULs', () {
+    final info = DeviceInfo.parse('V0.1\u0000\u0000');
+    expect(info.version, 'V0.1');
+    expect(info.secVer, 1);
+    expect(info.appInfo, isEmpty);
+  });
 }

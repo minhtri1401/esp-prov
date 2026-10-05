@@ -15,19 +15,15 @@ final class DeviceInfo {
   ///
   /// Accepts the JSON form
   /// `{"prov":{"ver":..,"sec_ver":..,"sec_patch_ver":..,"cap":[..]},..}` and
-  /// the plain version string of very old firmware. Missing `sec_ver` means
+  /// the plain version string of very old firmware (any text not starting with
+  /// `{`). Malformed JSON, or JSON without a `prov` object, throws a
+  /// [FormatException]. Missing `sec_ver` means
   /// Security 0 when the `no_sec` capability is present, else Security 1
   /// (esp_prov's rule). Missing `sec_patch_ver` means 0. Every top-level key
   /// other than `prov` lands in [appInfo].
   factory parse(String response) {
     final text = response.replaceAll('\u0000', '').trim();
-    Object? decoded;
-    try {
-      decoded = jsonDecode(text);
-    } on FormatException {
-      decoded = null;
-    }
-    if (decoded is! Map<String, Object?>) {
+    if (!text.startsWith('{')) {
       return DeviceInfo(
         version: text,
         secVer: 1,
@@ -35,8 +31,20 @@ final class DeviceInfo {
         capabilities: const {},
       );
     }
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(text);
+    } on FormatException catch (e) {
+      throw FormatException('proto-ver is not valid JSON: ${e.message}: $text');
+    }
+    if (decoded is! Map<String, Object?>) {
+      throw const FormatException('proto-ver JSON is not an object');
+    }
     final prov = decoded['prov'];
-    final provMap = prov is Map<String, Object?> ? prov : <String, Object?>{};
+    if (prov is! Map<String, Object?>) {
+      throw FormatException('proto-ver has no "prov" object: $text');
+    }
+    final provMap = prov;
     final rawCaps = provMap['cap'];
     final capabilities = <String>{
       if (rawCaps is List<Object?>) ...rawCaps.whereType<String>(),
