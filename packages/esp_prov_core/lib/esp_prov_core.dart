@@ -7,5 +7,6 @@ library;
 
 export 'src/errors/prov_exception.dart';
 export 'src/errors/prov_status.dart';
+export 'src/security/security_scheme.dart';
 export 'src/transport/prov_transport.dart';
 export 'src/transport/serial_queue.dart';
