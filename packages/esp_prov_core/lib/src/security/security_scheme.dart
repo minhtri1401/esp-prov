@@ -1,14 +1,22 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart' show sha256;
+import 'package:cryptography_plus/cryptography_plus.dart';
+import 'package:esp_prov_core/src/crypto/aes_ctr_stream.dart';
+import 'package:esp_prov_core/src/crypto/bytes.dart';
 import 'package:esp_prov_core/src/errors/prov_exception.dart';
 import 'package:esp_prov_core/src/errors/prov_status.dart';
 import 'package:esp_prov_core/src/proto/constants.pb.dart' as pb;
 import 'package:esp_prov_core/src/proto/sec0.pb.dart' as pb;
+import 'package:esp_prov_core/src/proto/sec1.pb.dart' as pb;
 import 'package:esp_prov_core/src/proto/session.pb.dart' as pb;
 import 'package:esp_prov_core/src/transport/prov_transport.dart';
+import 'package:meta/meta.dart';
 import 'package:protobuf/protobuf.dart' show InvalidProtocolBufferException;
 
 part 'security0.dart';
+part 'security1.dart';
 
 /// A protocomm security scheme: handshake on `prov-session`, then a
 /// stateful cipher for every later request and response.
@@ -68,6 +76,29 @@ void _checkScheme(
       'Device answered with ${response.secVer.name} and payload '
       '${response.whichProto().name}, expected ${expectedVersion.name} and '
       '${expectedProto.name}.',
+    );
+  }
+}
+
+/// Runs the proof step of a handshake. The firmware closes the BLE link when
+/// it rejects a proof, so a transport failure here means a wrong PoP or
+/// password rather than a radio problem.
+Future<pb.SessionData> _exchangeProof(
+  ProvTransport transport,
+  pb.SessionData request,
+  String what,
+) async {
+  try {
+    return await _exchange(transport, request);
+  } on TransportException catch (e) {
+    throw PopMismatch(
+      'The device dropped the session after receiving the $what '
+      '(${e.message}). The $what is most likely wrong.',
+    );
+  } on DeviceDisconnected {
+    throw PopMismatch(
+      'The device disconnected after receiving the $what. '
+      'The $what is most likely wrong.',
     );
   }
 }
