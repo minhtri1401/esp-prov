@@ -1,0 +1,52 @@
+{
+  "name": "sec1 with PoP abcd1234",
+  "pop": "abcd1234",
+  "client_private_key": "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20",
+  "client_public_key": "07a37cbc142093c8b755dc1b10e86cb426374ad16aa853ed0bdfc0b2b86d1c7c",
+  "device_private_key": "4142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60",
+  "device_public_key": "64b101b1d0be5a8704bd078f9895001fc03e8e9f9522f188dd128d9846d48466",
+  "device_random": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+  "session_key": "cf0c266562b0ebf4d1295c66cc5efceab8fa713f8cb6024932f3bbf59977a8cd",
+  "session_cmd0": "10015a25a201220a2007a37cbc142093c8b755dc1b10e86cb426374ad16aa853ed0bdfc0b2b86d1c7c",
+  "session_resp0": "10015a390801aa0134122064b101b1d0be5a8704bd078f9895001fc03e8e9f9522f188dd128d9846d484661a100f1e2d3c4b5a69788796a5b4c3d2e1f0",
+  "session_cmd1": "10015a270802b201221220a5ca8b6735e77343c04dd1c038f0f8f60d58569fd16d6907db75dc11f857d108",
+  "session_resp1": "10015a270803ba01221a20384b308b49e8f02473d062373e5549c185a30791b6c00e1b8c0e722448e565f3",
+  "client_verify_data": "a5ca8b6735e77343c04dd1c038f0f8f60d58569fd16d6907db75dc11f857d108",
+  "device_verify_data": "384b308b49e8f02473d062373e5549c185a30791b6c00e1b8c0e722448e565f3",
+  "messages": [
+    {
+      "direction": "client_to_device",
+      "plain": "01",
+      "cipher": "ae"
+    },
+    {
+      "direction": "device_to_client",
+      "plain": "68656c6c6f",
+      "cipher": "afa9dc5e24"
+    },
+    {
+      "direction": "client_to_device",
+      "plain": "000102030405060708090a0b0c0d0e0f",
+      "cipher": "d34eba50e103e68bf978ece804cc6b19"
+    },
+    {
+      "direction": "device_to_client",
+      "plain": "6465666768696a6b6c6d6e6f7071727374",
+      "cipher": "bdd88090981c7169a00a8f7089a55c8cb7"
+    },
+    {
+      "direction": "client_to_device",
+      "plain": "7b2273736964223a224d794e6574776f726b222c2270617373706872617365223a2278227d000102",
+      "cipher": "5585aa3e42ac39334a81e1b26736999209a5205f1d72762d81f66b93fddb9002f9e9f648c56812a3"
+    },
+    {
+      "direction": "device_to_client",
+      "plain": "656e64",
+      "cipher": "3499d3"
+    }
+  ],
+  "generator": {
+    "esp_idf": "4d59230ddff16327812782151ef0afef202dc6d7",
+    "idf_extra_components": "69e8b21e1a20c8c1c48f5d5cffceeb0bc262eed0"
+  }
+}
