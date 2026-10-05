@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:esp_prov_core/src/errors/prov_exception.dart';
 import 'package:esp_prov_core/src/flows/custom_endpoint.dart';
 import 'package:esp_prov_core/src/flows/prov_ctrl.dart';
+import 'package:esp_prov_core/src/flows/wifi_provisioner.dart';
 import 'package:esp_prov_core/src/security/security_scheme.dart';
 import 'package:esp_prov_core/src/session/device_info.dart';
 import 'package:esp_prov_core/src/session/prov_credentials.dart';
@@ -49,6 +50,7 @@ final class EspSession {
   final SerialQueue _queue = SerialQueue();
   bool _closed = false;
   Object? _failure;
+  WifiProvisioner? _wifi;
   ProvCtrl? _ctrl;
 
   /// Version and capabilities reported by the device.
@@ -92,6 +94,17 @@ final class EspSession {
           rethrow;
         }
       });
+
+  /// Wi-Fi scan and provisioning.
+  ///
+  /// Throws [UnsupportedCapability] only when the firmware lists
+  /// `thread_prov` without `wifi_prov` (a Thread-only device).
+  WifiProvisioner get wifi {
+    if (info.hasCapability('thread_prov') && !info.hasCapability('wifi_prov')) {
+      throw UnsupportedCapability('wifi_prov');
+    }
+    return _wifi ??= WifiProvisioner(this);
+  }
 
   /// Reset and re-provision commands on `prov-ctrl`.
   ProvCtrl get ctrl => _ctrl ??= ProvCtrl(this);
