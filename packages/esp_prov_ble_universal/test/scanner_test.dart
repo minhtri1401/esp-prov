@@ -53,31 +53,39 @@ void main() {
   test(
     'connect() hands the advertised service UUID to the transport',
     () async {
-      const service = '021a9004-0382-4aea-bff4-6b3f1c5adfb4';
+      const other = '11111111-2222-3333-4444-555555555555';
+      BleService svc(String uuid) => BleService(uuid, [
+        BleCharacteristic(characteristicUuidFor(uuid, 0xff51), const [], [
+          BleDescriptor('2901'),
+        ]),
+      ]);
       final platform = FakeBlePlatform(
-        services: [
-          BleService(service, [
-            BleCharacteristic(
-              characteristicUuidFor(service, 0xff51),
-              const [],
-              [BleDescriptor('2901')],
-            ),
-          ]),
-        ],
+        services: [svc(defaultServiceUuid), svc(other)],
         userDescriptions: {
-          characteristicUuidFor(service, 0xff51): 'prov-session',
+          characteristicUuidFor(defaultServiceUuid, 0xff51): 'prov-session',
+          characteristicUuidFor(other, 0xff51): 'prov-session',
         },
       );
       UniversalBle.setInstance(platform);
-      const device = UniversalBleDevice(
+      const advertised = UniversalBleDevice(
         id: 'AA:BB',
         name: 'PROV_X',
         rssi: null,
-        serviceUuid: service,
+        serviceUuid: other,
       );
-      final transport = await device.connect();
-      expect(transport.serviceUuid, service);
+      final transport = await advertised.connect();
+      expect(transport.serviceUuid, other);
       await transport.disconnect();
+
+      const bare = UniversalBleDevice(
+        id: 'AA:BB',
+        name: 'PROV_X',
+        rssi: null,
+        serviceUuid: '',
+      );
+      final fallback = await bare.connect();
+      expect(fallback.serviceUuid, defaultServiceUuid);
+      await fallback.disconnect();
     },
   );
 }
