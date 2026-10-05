@@ -4,3 +4,8 @@
 /// an `EspSession`, then use its Wi-Fi, Thread, control and custom endpoint
 /// flows.
 library;
+
+export 'src/errors/prov_exception.dart';
+export 'src/errors/prov_status.dart';
+export 'src/transport/prov_transport.dart';
+export 'src/transport/serial_queue.dart';
