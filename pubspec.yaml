@@ -6,6 +6,7 @@ environment:
 
 workspace:
   - packages/esp_prov_core
+  - packages/esp_prov_ble_universal
 
 dev_dependencies:
   very_good_analysis: ^11.0.0
