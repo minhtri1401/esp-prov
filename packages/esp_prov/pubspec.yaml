@@ -1,0 +1,30 @@
+name: esp_prov
+description: >-
+  Provision ESP32 devices over Bluetooth LE with Espressif Unified
+  Provisioning: Security 0/1/2, Wi-Fi and Thread, custom endpoints.
+version: 0.1.0
+repository: https://github.com/MinhTri1401/esp_prov/tree/main/packages/esp_prov
+issue_tracker: https://github.com/MinhTri1401/esp_prov/issues
+topics:
+  - esp32
+  - provisioning
+  - wifi
+  - bluetooth
+  - iot
+
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  esp_prov_ble_universal: ^0.1.0
+  esp_prov_core: ^0.1.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^11.0.0
