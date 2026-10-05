@@ -158,6 +158,35 @@ void main() {
     expect(calls, 1);
   });
 
+  test('a disconnect keeps its type on later requests', () async {
+    var calls = 0;
+    final device = FakeDevice(
+      protoVer: protoVerJson(secVer: 1),
+      pop: 'p',
+      extraEndpoints: {'custom-data'},
+      handlers: {
+        'custom-data': (request) {
+          calls++;
+          throw const DeviceDisconnected();
+        },
+      },
+    );
+    final session = await EspSession.open(
+      device,
+      credentials: const ProvCredentials.pop('p'),
+    );
+    final endpoint = session.custom('custom-data');
+    await expectLater(
+      endpoint.send(_bytes('a')),
+      throwsA(isA<DeviceDisconnected>()),
+    );
+    await expectLater(
+      endpoint.send(_bytes('b')),
+      throwsA(isA<DeviceDisconnected>()),
+    );
+    expect(calls, 1);
+  });
+
   test('unknown endpoint throws UnknownEndpoint without sending', () async {
     final device = _echoDevice(protoVerJson(secVer: 0, caps: ['no_sec']));
     final session = await EspSession.open(device);

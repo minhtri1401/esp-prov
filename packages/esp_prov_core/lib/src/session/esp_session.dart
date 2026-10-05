@@ -73,6 +73,7 @@ final class EspSession {
         }
         final failure = _failure;
         if (failure != null) {
+          if (failure is DeviceDisconnected) throw failure;
           throw TransportException(
             'The session cannot be used after a failed request. '
             'Reconnect and open a new session.',
@@ -82,8 +83,8 @@ final class EspSession {
         if (!_transport.endpoints.contains(endpoint)) {
           throw UnknownEndpoint(endpoint);
         }
-        final encrypted = await _scheme.encrypt(body);
         try {
+          final encrypted = await _scheme.encrypt(body);
           final response = await _transport.send(endpoint, encrypted);
           return await _scheme.decrypt(response);
         } on Object catch (e) {
