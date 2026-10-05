@@ -137,11 +137,10 @@ Before each check, if the device was provisioned, run
 - [ ] **Scan Wi-Fi** lists your network; tapping it fills the SSID.
 - [ ] **Send custom data** logs `custom-data replied: SUCCESS`; the monitor
       prints `Received data: hello from esp_prov`.
-- [ ] Wrong password (`Security 2` segment, password `nope`): SnackBar text
-      starts with `PopMismatch:` (the error type, as shown by
-      `describeError`), not a generic error. Either message text is
-      acceptable: `The device disconnected after receiving the username and
-      password` (real BLE path, `security_scheme.dart`), `The device dropped
+- [ ] Wrong password (`Security 2` segment, password `nope`): SnackBar shows one of
+      these messages (`describeError` returns the `ProvException` message
+      only, not the error type), not a generic error: `The device
+      disconnected after receiving the username and password` (real BLE path, `security_scheme.dart`), `The device dropped
       the session after receiving the username and password` (transport
       error variant), `The device proof does not verify` (Security 2,
       `security2.dart`) or `The device verification data does not match`
