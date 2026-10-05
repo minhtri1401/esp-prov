@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:esp_prov_core/src/errors/prov_exception.dart';
 import 'package:esp_prov_core/src/flows/custom_endpoint.dart';
 import 'package:esp_prov_core/src/flows/prov_ctrl.dart';
+import 'package:esp_prov_core/src/flows/thread_provisioner.dart';
 import 'package:esp_prov_core/src/flows/wifi_provisioner.dart';
 import 'package:esp_prov_core/src/security/security_scheme.dart';
 import 'package:esp_prov_core/src/session/device_info.dart';
@@ -51,6 +52,7 @@ final class EspSession {
   bool _closed = false;
   Object? _failure;
   WifiProvisioner? _wifi;
+  ThreadProvisioner? _thread;
   ProvCtrl? _ctrl;
 
   /// Version and capabilities reported by the device.
@@ -104,6 +106,14 @@ final class EspSession {
       throw UnsupportedCapability('wifi_prov');
     }
     return _wifi ??= WifiProvisioner(this);
+  }
+
+  /// Thread scan and provisioning. Requires the `thread_prov` capability.
+  ThreadProvisioner get thread {
+    if (!info.hasCapability('thread_prov')) {
+      throw UnsupportedCapability('thread_prov');
+    }
+    return _thread ??= ThreadProvisioner(this);
   }
 
   /// Reset and re-provision commands on `prov-ctrl`.

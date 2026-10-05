@@ -9,6 +9,8 @@ export 'src/errors/prov_exception.dart';
 export 'src/errors/prov_status.dart';
 export 'src/flows/custom_endpoint.dart';
 export 'src/flows/prov_ctrl.dart';
+export 'src/flows/thread_models.dart';
+export 'src/flows/thread_provisioner.dart';
 export 'src/flows/wifi_models.dart';
 export 'src/flows/wifi_provisioner.dart';
 export 'src/security/security_scheme.dart';
