@@ -1,0 +1,10 @@
+.dart_tool/
+build/
+.fvm/
+.venv/
+.cache/
+pubspec_overrides.yaml
+*.iml
+.idea/
+.DS_Store
+coverage/

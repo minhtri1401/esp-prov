@@ -1,0 +1,28 @@
+name: esp_prov_core
+description: >-
+  Pure-Dart client for Espressif Unified Provisioning (protocomm): Security 0,
+  1 and 2, Wi-Fi and Thread provisioning flows and custom endpoints.
+version: 0.1.0
+repository: https://github.com/MinhTri1401/esp_prov/tree/main/packages/esp_prov_core
+issue_tracker: https://github.com/MinhTri1401/esp_prov/issues
+topics:
+  - esp32
+  - provisioning
+  - wifi
+  - iot
+  - bluetooth
+
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  crypto: ^3.0.7
+  cryptography_plus: ^3.0.0
+  meta: ^1.16.0
+  protobuf: ^6.1.0
+
+dev_dependencies:
+  test: ^1.25.0
+  very_good_analysis: ^11.0.0

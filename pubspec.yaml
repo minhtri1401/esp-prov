@@ -1,0 +1,11 @@
+name: esp_prov_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+workspace:
+  - packages/esp_prov_core
+
+dev_dependencies:
+  very_good_analysis: ^11.0.0
