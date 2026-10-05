@@ -67,4 +67,32 @@ void main() {
     expect(map.characteristics.keys, ['prov-config']);
     expect(map.warnings.single, contains('0x2901'));
   });
+
+  test('a repeated 0x2901 name keeps the first and warns', () async {
+    final service = BleService(_service, [_char(0xff51), _char(0xff54)]);
+    final map = await discoverEndpoints(
+      service,
+      (uuid) async => Uint8List.fromList('prov-session'.codeUnits),
+    );
+    expect(map.characteristics, {
+      'prov-session': characteristicUuidFor(_service, 0xff51),
+    });
+    expect(map.warnings.single, contains('021aff54'));
+  });
+
+  test('a fallback id whose name is already taken warns', () async {
+    final service = BleService(_service, [
+      _char(0xff54),
+      _char(0xff51, described: false),
+    ]);
+    final map = await discoverEndpoints(
+      service,
+      (uuid) async => Uint8List.fromList('prov-session'.codeUnits),
+    );
+    expect(map.characteristics, {
+      'prov-session': characteristicUuidFor(_service, 0xff54),
+    });
+    expect(map.warnings.single, contains('already mapped'));
+    expect(map.warnings.single, contains('021aff51'));
+  });
 }

@@ -81,7 +81,15 @@ Future<EndpointMap> discoverEndpoints(
             .trim()
             .toLowerCase();
         if (name.isNotEmpty) {
-          named[name] = uuid;
+          final existing = named[name];
+          if (existing == null) {
+            named[name] = uuid;
+          } else {
+            warnings.add(
+              'Characteristic $uuid repeats endpoint name "$name" already '
+              'mapped to $existing; ignoring it.',
+            );
+          }
           continue;
         }
       } on Object catch (e) {
@@ -93,13 +101,18 @@ Future<EndpointMap> discoverEndpoints(
   for (final uuid in unnamed) {
     final id = endpointIdOf(service.uuid, uuid);
     final name = id == null ? null : fallbackEndpointNames[id];
-    if (name != null && !named.containsKey(name)) {
-      named[name] = uuid;
-    } else {
+    if (name == null) {
       warnings.add(
-        'Characteristic $uuid has no endpoint name; a custom endpoint on it '
-        'cannot be addressed.',
+        'Characteristic $uuid has no endpoint name and no known fallback id; '
+        'it is not addressable.',
       );
+    } else if (named.containsKey(name)) {
+      warnings.add(
+        'Characteristic $uuid would be "$name" by its id but that name is '
+        'already mapped to ${named[name]}; ignoring it.',
+      );
+    } else {
+      named[name] = uuid;
     }
   }
   return EndpointMap(named, warnings);
