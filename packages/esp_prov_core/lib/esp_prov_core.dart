@@ -13,6 +13,7 @@ export 'src/flows/thread_models.dart';
 export 'src/flows/thread_provisioner.dart';
 export 'src/flows/wifi_models.dart';
 export 'src/flows/wifi_provisioner.dart';
+export 'src/qr/prov_qr_payload.dart';
 export 'src/security/security_scheme.dart';
 export 'src/session/device_info.dart';
 export 'src/session/esp_session.dart';
