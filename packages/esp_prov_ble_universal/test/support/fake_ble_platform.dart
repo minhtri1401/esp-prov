@@ -21,6 +21,7 @@ class FakeBlePlatform extends UniversalBlePlatform {
     this.responders = const {},
     this.adverts = const [],
     this.transactionDelay = Duration.zero,
+    this.failDiscoverServices = false,
   });
 
   /// Services returned by `discoverServices`.
@@ -37,6 +38,9 @@ class FakeBlePlatform extends UniversalBlePlatform {
 
   /// Advertisements emitted when scanning starts.
   final List<BleDevice> adverts;
+
+  /// Makes `discoverServices` throw.
+  final bool failDiscoverServices;
 
   /// Delay applied to each write, to expose interleaving.
   final Duration transactionDelay;
@@ -92,7 +96,10 @@ class FakeBlePlatform extends UniversalBlePlatform {
   Future<List<BleService>> discoverServices(
     String deviceId,
     bool withDescriptors,
-  ) async => services;
+  ) async {
+    if (failDiscoverServices) throw Exception('GATT: discovery failed');
+    return services;
+  }
 
   @override
   Future<Uint8List> readDescriptorValue(

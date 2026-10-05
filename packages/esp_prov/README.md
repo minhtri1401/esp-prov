@@ -59,7 +59,8 @@ the app only supplies the matching credentials. After `WifiConnected` the
 device stops provisioning and disconnects on its own, so a following
 `session.close()` is harmless.
 
-This package replaces the abandoned `flutter_esp_ble_prov` package.
+This package is an independent, pure-Dart alternative to the unmaintained
+`flutter_esp_ble_prov` (not a fork).
 
 ### Errors
 
@@ -70,6 +71,9 @@ not match the firmware), `MissingCredentials`, `DeviceDisconnected`,
 `HandshakeFailed`, `CryptoException`, `ProvStatusException`. Wrong Wi-Fi
 passphrase or unknown SSID are not exceptions: they arrive as
 `WifiFailed(reason: WifiFailureReason.authError | networkNotFound)`.
+`WifiFailureReason` also has `timeout` and `deviceDisconnected`. Protocol
+faults (`ProvException` subclasses) arrive as stream errors on `provision()`,
+so callers should handle both states and errors.
 
 ## Platform setup
 

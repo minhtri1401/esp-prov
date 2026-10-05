@@ -35,6 +35,25 @@ void main() {
     final iv = List<int>.generate(16, (i) => 0xf0 + i);
     final data = List<int>.generate(70, (i) => (i * 7) & 0xff);
 
+    test('a 3-block apply spanning the 64-bit counter wrap', () async {
+      final wrapIv = Uint8List.fromList([
+        ...List<int>.generate(8, (i) => i + 1),
+        ...List<int>.filled(8, 0xff),
+      ]);
+      final input = List<int>.generate(48, (i) => i * 5 & 0xff);
+      final whole = await AesCtrStream(key: key, iv: wrapIv).apply(input);
+      final blocks = <int>[];
+      for (var i = 0; i < 3; i++) {
+        blocks.addAll(
+          await AesCtrStream(
+            key: key,
+            iv: AesCtrStream.counterBlock(wrapIv, i),
+          ).apply(input.sublist(i * 16, i * 16 + 16)),
+        );
+      }
+      expect(whole, blocks);
+    });
+
     test('chunked calls equal one call (keystream offset is kept)', () async {
       final whole = await AesCtrStream(key: key, iv: iv).apply(data);
       final chunked = AesCtrStream(key: key, iv: iv);

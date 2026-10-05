@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:crypto/crypto.dart' show sha512;
 import 'package:esp_prov_core/esp_prov_core.dart';
 import 'package:esp_prov_core/src/crypto/bytes.dart';
 import 'package:esp_prov_core/src/crypto/srp6a.dart';
@@ -28,11 +26,19 @@ void main() {
 
   test('x uses the salt bytes as sent, including a leading zero', () {
     // esp_srp.c hashes the raw salt buffer; Python esp_prov would strip the
-    // leading zero. Both salts below must produce different verifiers.
-    final inner = sha512.convert(utf8.encode('wifiprov:abcd1234')).bytes;
-    final withZero = sha512.convert([0, 1, 2, ...inner]).bytes;
-    final stripped = sha512.convert([1, 2, ...inner]).bytes;
-    expect(withZero, isNot(stripped));
+    // leading zero. The two salts must therefore give different proofs.
+    final f = loadFixture('sec2_example.json');
+    final a = BigInt.parse(f['a']! as String, radix: 16);
+    final rest = hexField(f, 'salt');
+    Uint8List proofFor(Uint8List salt) => Srp6aClient.computeProof(
+      username: f['username']! as String,
+      password: f['password']! as String,
+      a: a,
+      clientPublicKey: hexField(f, 'client_public_key'),
+      salt: salt,
+      serverPublicKey: hexField(f, 'device_public_key'),
+    ).clientProof;
+    expect(proofFor(Uint8List.fromList([0, ...rest])), isNot(proofFor(rest)));
   });
 
   for (final name in [

@@ -34,6 +34,10 @@ abstract interface class ProvTransport {
   Future<Uint8List> send(String endpoint, Uint8List request);
 
   /// Emits once when the link drops for any reason.
+  ///
+  /// Must be a broadcast stream: it is listened to several times over the
+  /// session lifetime (every provisioning run subscribes). A link that has
+  /// dropped must also surface from [send] as `DeviceDisconnected`.
   Stream<void> get onDisconnected;
 
   /// Closes the link. Safe to call when already disconnected.

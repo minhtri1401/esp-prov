@@ -2,6 +2,19 @@ import 'package:esp_prov_core/esp_prov_core.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('a rejected payload does not leak the pop into the exception', () {
+    expect(
+      () => ProvQrPayload.parse('{"ver":"v1","pop":"s3cr3t-pop-value"}'),
+      throwsA(
+        isA<FormatException>().having(
+          (e) => e.toString(),
+          'toString',
+          isNot(contains('s3cr3t-pop-value')),
+        ),
+      ),
+    );
+  });
+
   test('stock Security 2 QR: password travels in "pop"', () {
     final qr = ProvQrPayload.parse(
       '{"ver":"v1","name":"PROV_1A2B3C","username":"wifiprov",'

@@ -15,7 +15,8 @@ import 'package:esp_prov_core/src/transport/serial_queue.dart';
 
 /// An authenticated provisioning session with one device.
 final class EspSession {
-  new _(this._transport, this.info, this._scheme);
+  new _(this._transport, this.info, this._scheme)
+    : onDisconnected = _transport.onDisconnected.asBroadcastStream();
 
   /// Reads `proto-ver`, picks the security scheme the firmware declares,
   /// runs the handshake and returns the session.
@@ -69,7 +70,8 @@ final class EspSession {
   ///
   /// Security 1 and 2 ciphers are stateful, so after any failed request the
   /// device and this session disagree on cipher state. Later requests then
-  /// throw [TransportException] and the caller must reconnect.
+  /// rethrow a poisoning [DeviceDisconnected] as [DeviceDisconnected] and any
+  /// other failure as [TransportException], asking the caller to reconnect.
   Future<Uint8List> request(String endpoint, Uint8List body) =>
       _queue.run(() async {
         if (_closed) {
@@ -123,7 +125,7 @@ final class EspSession {
   CustomEndpoint custom(String name) => CustomEndpoint(this, name);
 
   /// Emits once when the link drops.
-  Stream<void> get onDisconnected => _transport.onDisconnected;
+  final Stream<void> onDisconnected;
 
   /// Closes the session and the link. Safe to call more than once and after
   /// the device has already disconnected.

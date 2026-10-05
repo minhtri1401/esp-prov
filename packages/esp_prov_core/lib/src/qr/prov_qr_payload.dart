@@ -25,10 +25,10 @@ final class ProvQrPayload {
     try {
       decoded = jsonDecode(json.trim());
     } on FormatException catch (e) {
-      throw FormatException('QR payload is not JSON: ${e.message}', json);
+      throw FormatException('QR payload is not JSON: ${e.message}');
     }
     if (decoded is! Map<String, Object?>) {
-      throw FormatException('QR payload is not a JSON object', json);
+      throw const FormatException('QR payload is not a JSON object');
     }
     final map = decoded;
     String? str(String key) => switch (map[key]) {
@@ -38,7 +38,7 @@ final class ProvQrPayload {
 
     final name = str('name');
     if (name == null || name.isEmpty) {
-      throw FormatException('QR payload has no "name"', json);
+      throw const FormatException('QR payload has no "name"');
     }
     final security = map['security'];
     return ProvQrPayload(

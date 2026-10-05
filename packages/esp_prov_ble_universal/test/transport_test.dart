@@ -101,6 +101,16 @@ void main() {
     expect(platform.log.last, 'disconnect');
   });
 
+  test('a failing service discovery becomes TransportException', () async {
+    final platform = FakeBlePlatform(failDiscoverServices: true);
+    UniversalBle.setInstance(platform);
+    await expectLater(
+      UniversalBleTransport.connect(_device),
+      throwsA(isA<TransportException>()),
+    );
+    expect(platform.log, contains('disconnect'));
+  });
+
   test(
     'send writes with response, then reads the same characteristic',
     () async {

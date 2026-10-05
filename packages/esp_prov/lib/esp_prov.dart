@@ -15,7 +15,12 @@
 library;
 
 export 'package:esp_prov_ble_universal/esp_prov_ble_universal.dart'
-    show UniversalBleDevice, UniversalBleScanner, UniversalBleTransport;
+    show
+        UniversalBleDevice,
+        UniversalBleScanner,
+        UniversalBleTransport,
+        defaultServiceUuid,
+        exampleServiceUuid;
 export 'package:esp_prov_core/esp_prov_core.dart';
 
 export 'src/esp_provisioning.dart';

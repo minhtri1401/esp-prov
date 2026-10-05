@@ -49,7 +49,13 @@ final class AesGcmCounter {
     return box.concatenation(nonce: false);
   }
 
-  /// Decrypts `ciphertext | tag`. Throws [CryptoException] if the tag does
+  /// Decrypts `ciphertext | tag`.
+  ///
+  /// A failed decrypt (short input or tag mismatch) still consumes the nonce
+  /// counter. This is by design: the session is poisoned after any failure,
+  /// and the counter must never be reused.
+  ///
+  /// Throws [CryptoException] if the tag does
   /// not verify or the input is shorter than the tag.
   Future<Uint8List> decrypt(List<int> cipherWithTag) async {
     final nonce = _takeNonce();

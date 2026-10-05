@@ -98,9 +98,14 @@ final class UniversalBleTransport implements ProvTransport {
         ),
       );
       return UniversalBleTransport._(deviceId, serviceUuid, map);
-    } on Object {
-      await UniversalBle.disconnect(deviceId);
-      rethrow;
+    } on Object catch (e) {
+      try {
+        await UniversalBle.disconnect(deviceId);
+      } on Object {
+        // Best effort: the original error must win.
+      }
+      if (e is ProvException) rethrow;
+      throw TransportException('Connecting to $deviceId failed: $e', cause: e);
     }
   }
 

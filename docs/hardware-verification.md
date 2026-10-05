@@ -138,8 +138,14 @@ Before each check, if the device was provisioned, run
 - [ ] **Send custom data** logs `custom-data replied: SUCCESS`; the monitor
       prints `Received data: hello from esp_prov`.
 - [ ] Wrong password (`Security 2` segment, password `nope`): SnackBar text
-      starts with `The device dropped the session` or `The device proof does
-      not verify` (PopMismatch), not a generic error. The monitor prints
+      starts with `PopMismatch:` (the error type, as shown by
+      `describeError`), not a generic error. Either message text is
+      acceptable: `The device disconnected after receiving the username and
+      password` (real BLE path, `security_scheme.dart`), `The device dropped
+      the session after receiving the username and password` (transport
+      error variant), `The device proof does not verify` (Security 2,
+      `security2.dart`) or `The device verification data does not match`
+      (Security 1, `security1.dart`). The monitor prints
       `Received incorrect username and/or PoP for establishing secure
       session!`.
 - [ ] Wrong passphrase: log ends with `Failed: authError` (may first show
