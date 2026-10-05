@@ -24,6 +24,7 @@ void main() {
     final scheme = Security0();
     await scheme.handshake(transport);
 
+    expect(transport.sent.single.$2, [0x52, 0x03, 0xa2, 0x01, 0x00]);
     final request = pb.SessionData.fromBuffer(transport.sent.single.$2);
     expect(request.secVer, pb.SecSchemeVersion.SecScheme0);
     expect(request.sec0.hasSc(), isTrue);
@@ -45,6 +46,27 @@ void main() {
           ProvStatus.invalidSession,
         ),
       ),
+    );
+  });
+
+  test('empty reply throws HandshakeFailed', () async {
+    final transport = ReplayTransport([
+      const Exchange('prov-session', null, []),
+    ]);
+    await expectLater(
+      Security0().handshake(transport),
+      throwsA(isA<HandshakeFailed>()),
+    );
+  });
+
+  test('reply with another sec_ver throws HandshakeFailed', () async {
+    final reply = pb.SessionData(secVer: pb.SecSchemeVersion.SecScheme1);
+    final transport = ReplayTransport([
+      Exchange('prov-session', null, reply.writeToBuffer()),
+    ]);
+    await expectLater(
+      Security0().handshake(transport),
+      throwsA(isA<HandshakeFailed>()),
     );
   });
 }

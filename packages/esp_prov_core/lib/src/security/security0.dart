@@ -10,13 +10,22 @@ final class Security0 extends SecurityScheme {
     final response = await _exchange(
       transport,
       pb.SessionData(
-        secVer: pb.SecSchemeVersion.SecScheme0,
-        // msg S0_Session_Command is the proto3 default (0) and is left unset;
-        // protobuf.dart would otherwise serialise it, unlike esp_prov.
+        // sec_ver SecScheme0 and msg S0_Session_Command are the proto3
+        // default (0) and are left unset; protobuf.dart would otherwise
+        // serialise them, unlike esp_prov.
         sec0: pb.Sec0Payload(sc: pb.S0SessionCmd()),
       ),
     );
-    _checkScheme(response, pb.SecSchemeVersion.SecScheme0);
+    _checkScheme(
+      response,
+      pb.SecSchemeVersion.SecScheme0,
+      pb.SessionData_Proto.sec0,
+    );
+    if (!response.sec0.hasSr()) {
+      throw const HandshakeFailed(
+        'Security 0 response has no session response payload',
+      );
+    }
     _checkStatus(response.sec0.sr.status, 'Security 0 session setup');
   }
 

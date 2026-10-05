@@ -55,12 +55,19 @@ void _checkStatus(pb.Status status, String step) {
   }
 }
 
-/// Throws [HandshakeFailed] unless the device answered with [expected].
-void _checkScheme(pb.SessionData response, pb.SecSchemeVersion expected) {
-  if (response.secVer != expected) {
+/// Throws [HandshakeFailed] unless the device answered with
+/// [expectedVersion] and the [expectedProto] payload.
+void _checkScheme(
+  pb.SessionData response,
+  pb.SecSchemeVersion expectedVersion,
+  pb.SessionData_Proto expectedProto,
+) {
+  if (response.secVer != expectedVersion ||
+      response.whichProto() != expectedProto) {
     throw HandshakeFailed(
-      'Device answered with ${response.secVer.name}, expected '
-      '${expected.name}.',
+      'Device answered with ${response.secVer.name} and payload '
+      '${response.whichProto().name}, expected ${expectedVersion.name} and '
+      '${expectedProto.name}.',
     );
   }
 }
