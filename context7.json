@@ -3,13 +3,8 @@
   "projectTitle": "esp_prov",
   "description": "Pure-Dart Espressif Unified Provisioning for Flutter: provision ESP32 devices over Bluetooth LE with Security 0, 1 and 2, Wi-Fi, Thread and custom endpoints.",
   "folders": [
-    "packages/esp_prov/README.md",
-    "packages/esp_prov_core/README.md",
-    "packages/esp_prov_ble_universal/README.md",
-    "packages/esp_prov/example/lib",
-    "packages/esp_prov_core/example",
-    "docs/hardware-verification.md",
-    "README.md"
+    "packages",
+    "docs"
   ],
   "excludeFolders": [
     "packages/esp_prov_core/lib/src/proto",
@@ -24,7 +19,9 @@
     "packages/esp_prov/example/macos",
     "packages/esp_prov/example/linux",
     "packages/esp_prov/example/windows",
-    "packages/esp_prov/example/web"
+    "packages/esp_prov/example/web",
+    "packages/esp_prov/example/build",
+    "packages/esp_prov_core/test/fixtures"
   ],
   "excludeFiles": [],
   "rules": [

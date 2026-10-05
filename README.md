@@ -100,7 +100,8 @@ ESP-IDF 5.1 and newer. Both provisioning components are supported:
 (ESP-IDF 6.x), which adds Thread. They are wire compatible, so one client
 handles both. See the
 [Unified Provisioning documentation](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/provisioning/provisioning.html)
-and the ESP-IDF 6.0 provisioning migration guide.
+and the
+[ESP-IDF 6.0 provisioning migration guide](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/migration-guides/release-6.x/6.0/provisioning.html).
 
 ## esp_prov vs flutter_esp_ble_prov
 
@@ -124,7 +125,7 @@ research no other Dart package implemented Security 2.
 
 The core has 135 tests, the BLE adapter 19, the facade 7 and the example app 4
 widget tests. Cryptographic and protocol fixtures are generated from
-Espressif's own [esp_prov tool](https://github.com/espressif/esp-idf/tree/master/tools/esp_prov),
+Espressif's own [esp_prov tool](https://github.com/espressif/idf-extra-components/tree/master/network_provisioning/tool/esp_prov),
 so encoded messages are checked byte for byte against the reference
 implementation. The hardware target is an ESP32-S3-DevKitC-1 running the stock
 `wifi_prov_mgr` example; the manual steps are in the
