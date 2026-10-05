@@ -22,11 +22,26 @@ class _SessionPageState extends State<SessionPage> {
   final _log = <String>[];
   List<WifiNetwork> _networks = const [];
   bool _busy = false;
+  bool _disconnected = false;
+  StreamSubscription<void>? _disconnects;
 
   EspSession get _session => widget.session;
 
   @override
+  void initState() {
+    super.initState();
+    _disconnects = _session.onDisconnected.listen((_) {
+      if (!mounted) return;
+      setState(() {
+        _disconnected = true;
+        _log.add('Device disconnected');
+      });
+    });
+  }
+
+  @override
   void dispose() {
+    unawaited(_disconnects?.cancel());
     unawaited(_session.close());
     _ssid.dispose();
     _passphrase.dispose();
@@ -34,7 +49,10 @@ class _SessionPageState extends State<SessionPage> {
     super.dispose();
   }
 
-  void _append(String line) => setState(() => _log.add(line));
+  void _append(String line) {
+    if (!mounted) return;
+    setState(() => _log.add(line));
+  }
 
   Future<void> _run(Future<void> Function() action) async {
     setState(() => _busy = true);
@@ -49,6 +67,7 @@ class _SessionPageState extends State<SessionPage> {
 
   Future<void> _scanWifi() => _run(() async {
     final networks = await _session.wifi.scan();
+    if (!mounted) return;
     setState(() => _networks = networks);
     _append('Found ${networks.length} networks');
   });
@@ -97,7 +116,7 @@ class _SessionPageState extends State<SessionPage> {
             ),
             if (_busy) const LinearProgressIndicator(),
             FilledButton.tonal(
-              onPressed: _scanWifi,
+              onPressed: _disconnected ? null : _scanWifi,
               child: const Text('Scan Wi-Fi'),
             ),
             for (final n in _networks)
@@ -116,14 +135,17 @@ class _SessionPageState extends State<SessionPage> {
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Passphrase'),
             ),
-            FilledButton(onPressed: _provision, child: const Text('Provision')),
+            FilledButton(
+              onPressed: _disconnected ? null : _provision,
+              child: const Text('Provision'),
+            ),
             const Divider(height: 32),
             TextField(
               controller: _custom,
               decoration: const InputDecoration(labelText: 'custom-data'),
             ),
             FilledButton.tonal(
-              onPressed: _sendCustom,
+              onPressed: _disconnected ? null : _sendCustom,
               child: const Text('Send custom data'),
             ),
             const Divider(height: 32),

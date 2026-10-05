@@ -76,4 +76,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('QR payload is not JSON'), findsOneWidget);
   });
+
+  testWidgets('a throwing permission request is shown, not thrown', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      EspProvExampleApp(
+        provisioning: EspProvisioning(scanner: _Scanner()),
+        requestPermissions: () async => throw StateError('no bluetooth'),
+      ),
+    );
+    await tester.enterText(
+      find.byKey(const Key('qr')),
+      '{"ver":"v1","name":"PROV_ABC123","transport":"ble","pop":"abcd1234"}',
+    );
+    await tester.runAsync(() async {
+      await tester.tap(find.text('Connect with QR payload'));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+    await tester.pumpAndSettle();
+    expect(find.textContaining('no bluetooth'), findsOneWidget);
+  });
 }

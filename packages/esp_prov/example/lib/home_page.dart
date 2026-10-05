@@ -62,11 +62,19 @@ class _HomePageState extends State<HomePage> {
       _show(e);
       return;
     }
+    if (!mounted) return;
     setState(() {
       _devices.clear();
       _scan = widget.provisioning
           .scan(namePrefix: _prefix.text)
-          .listen((d) => setState(() => _devices.add(d)), onError: _show);
+          .listen(
+            (d) => setState(() => _devices.add(d)),
+            onError: _show,
+            onDone: () {
+              if (!mounted) return;
+              setState(() => _scan = null);
+            },
+          );
     });
   }
 
@@ -76,7 +84,7 @@ class _HomePageState extends State<HomePage> {
   ) async {
     setState(() => _busy = true);
     await _scan?.cancel();
-    _scan = null;
+    if (mounted) setState(() => _scan = null);
     try {
       final device = await find();
       final session = await device.connect(credentials: credentials);
@@ -104,7 +112,12 @@ class _HomePageState extends State<HomePage> {
       _show(e.message);
       return;
     }
-    await widget.requestPermissions();
+    try {
+      await widget.requestPermissions();
+    } on Object catch (e) {
+      _show(e);
+      return;
+    }
     await _connect(
       () => widget.provisioning.findDevice(qr.name),
       qr.credentials,
