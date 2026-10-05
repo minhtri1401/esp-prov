@@ -4,12 +4,16 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart' show sha256;
 import 'package:cryptography_plus/cryptography_plus.dart';
 import 'package:esp_prov_core/src/crypto/aes_ctr_stream.dart';
+import 'package:esp_prov_core/src/crypto/aes_gcm_counter.dart';
 import 'package:esp_prov_core/src/crypto/bytes.dart';
+import 'package:esp_prov_core/src/crypto/offload.dart';
+import 'package:esp_prov_core/src/crypto/srp6a.dart';
 import 'package:esp_prov_core/src/errors/prov_exception.dart';
 import 'package:esp_prov_core/src/errors/prov_status.dart';
 import 'package:esp_prov_core/src/proto/constants.pb.dart' as pb;
 import 'package:esp_prov_core/src/proto/sec0.pb.dart' as pb;
 import 'package:esp_prov_core/src/proto/sec1.pb.dart' as pb;
+import 'package:esp_prov_core/src/proto/sec2.pb.dart' as pb;
 import 'package:esp_prov_core/src/proto/session.pb.dart' as pb;
 import 'package:esp_prov_core/src/transport/prov_transport.dart';
 import 'package:meta/meta.dart';
@@ -17,6 +21,7 @@ import 'package:protobuf/protobuf.dart' show InvalidProtocolBufferException;
 
 part 'security0.dart';
 part 'security1.dart';
+part 'security2.dart';
 
 /// A protocomm security scheme: handshake on `prov-session`, then a
 /// stateful cipher for every later request and response.
