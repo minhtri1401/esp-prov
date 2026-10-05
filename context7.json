@@ -1,0 +1,38 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "esp_prov",
+  "description": "Pure-Dart Espressif Unified Provisioning for Flutter: provision ESP32 devices over Bluetooth LE with Security 0, 1 and 2, Wi-Fi, Thread and custom endpoints.",
+  "folders": [
+    "packages/esp_prov/README.md",
+    "packages/esp_prov_core/README.md",
+    "packages/esp_prov_ble_universal/README.md",
+    "packages/esp_prov/example/lib",
+    "packages/esp_prov_core/example",
+    "docs/hardware-verification.md",
+    "README.md"
+  ],
+  "excludeFolders": [
+    "packages/esp_prov_core/lib/src/proto",
+    "third_party",
+    ".superpowers",
+    "docs/superpowers",
+    "tool",
+    ".cache",
+    ".github",
+    "packages/esp_prov/example/android",
+    "packages/esp_prov/example/ios",
+    "packages/esp_prov/example/macos",
+    "packages/esp_prov/example/linux",
+    "packages/esp_prov/example/windows",
+    "packages/esp_prov/example/web"
+  ],
+  "excludeFiles": [],
+  "rules": [
+    "Run Flutter and Dart through FVM (fvm flutter, fvm dart); the project pins Flutter 3.47.5 and Dart 3.13.",
+    "The firmware decides the security scheme through proto-ver; pass only credentials (ProvCredentials.pop or ProvCredentials.security2), never choose a scheme in the app.",
+    "Wi-Fi provisioning outcomes are WifiProvisionState values (WifiConnected, WifiFailed, ...); a wrong passphrase or unknown SSID arrives as WifiFailed, while protocol faults are ProvException subclasses.",
+    "After WifiConnected the device stops provisioning and disconnects on its own; do not treat that disconnect as an error.",
+    "The package never requests BLE permissions; the app must request them before scanning.",
+    "esp_prov_core is pure Dart with no Flutter imports; use esp_prov for Flutter apps."
+  ]
+}
