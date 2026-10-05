@@ -8,3 +8,4 @@ export 'src/endpoint_discovery.dart'
         discoverEndpoints,
         endpointIdOf,
         fallbackEndpointNames;
+export 'src/transport.dart';
