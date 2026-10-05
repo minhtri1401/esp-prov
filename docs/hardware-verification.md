@@ -35,9 +35,21 @@ ls /dev/cu.usbserial-* /dev/cu.wchusbserial-* /dev/cu.usbmodem* 2>/dev/null
 
 Use that path as `PORT` below, e.g. `export PORT=/dev/cu.usbserial-110`.
 
-Optional second pass on ESP-IDF 6.0 (pulls `network_provisioning`, reports
-`netprov-v1.2`): clone `-b v6.0` into `~/esp/esp-idf-v6.0` and repeat
-sections 1-3 with its `export.sh`. The example path is the same.
+Optional second pass on ESP-IDF 6.0: clone `-b v6.0` into
+`~/esp/esp-idf-v6.0`, install it, and source its `export.sh`. In 6.0
+`wifi_prov_mgr` no longer exists under `$IDF_PATH/examples/provisioning`. The
+example lives in idf-extra-components:
+
+```bash
+git clone https://github.com/espressif/idf-extra-components ~/esp/idf-extra-components
+cp -r ~/esp/idf-extra-components/network_provisioning/examples/wifi_prov ~/esp/prov-sec2-idf6
+```
+
+Repeat sections 1-3 using that copy instead of the `cp -r "$IDF_PATH/..."`
+line. The `EXAMPLE_PROV_SECURITY_VERSION_*` menuconfig symbols are unchanged;
+the manager menu is named **Network Provisioning Manager** (symbol
+`CONFIG_NETWORK_PROV_AUTOSTOP_TIMEOUT`). `proto-ver` then reports
+`ver: netprov-v1.2`.
 
 ## 1. Build A: Security 2 (example default)
 
@@ -76,10 +88,15 @@ The QR payload is `{"ver":"v1","name":"PROV_XXXXXX","pop":"abcd1234","transport"
 
 ## 3. Build C: Security 2 with a longer auto-stop timeout
 
-Same as build A, plus in menuconfig: **Component config -> Wi-Fi Provisioning
-Manager -> Provisioning auto-stop timeout** set to `120`, and **Example
-Configuration -> Re-provisioning** enabled (lets `ctrl.reprovisionWifi()` be
-exercised without erasing flash).
+Same as build A (the `custom-data` endpoint is already registered by the
+example), plus in menuconfig: **Component config -> Wi-Fi Provisioning
+Manager -> Provisioning auto-stop timeout** set to `120`. Leave
+**Example Configuration -> Re-provisioning** OFF: enabling it calls
+`wifi_prov_mgr_disable_auto_stop(1000)` and the board would never stop.
+
+The raised timeout gives you up to 120 s to query status before the board
+stops on its own. The roughly 1 s stop after the app observes `Connected` is
+unchanged.
 
 ## 4. Automated hardware test (per build, per phone)
 
@@ -97,7 +114,7 @@ fvm flutter test integration_test/provisioning_test.dart -d <device-id> \
   --dart-define=WIFI_PASSPHRASE=<your passphrase>
 ```
 
-For build B use `PROV_SEC=1` (username is ignored). Expected: `All tests
+Build C uses the same command as build A. For build B use `PROV_SEC=1` (username is ignored). Expected: `All tests
 passed!`, and the monitor shows `Received Wi-Fi credentials`, then
 `Connected with IP Address:...`, then `Provisioning successful`.
 
@@ -126,13 +143,15 @@ Before each check, if the device was provisioned, run
       `Received incorrect username and/or PoP for establishing secure
       session!`.
 - [ ] Wrong passphrase: log ends with `Failed: authError` (may first show
-      `Attempt failed, N left`).
+      `Attempt failed, N left`). With the example's default 5 connection
+      attempts a slow AP may produce `Failed: timeout` instead; record it.
 - [ ] Unknown SSID (type `does-not-exist`): log ends with
       `Failed: networkNotFound`.
 - [ ] Unplug the board while the log shows `Device is connecting`: log ends
       with `Failed: deviceDisconnected`.
 - [ ] Correct credentials: log ends with `Connected to <ssid> as <ip>`; the
-      board then stops advertising (auto-stop) and the app shows no error.
+      board stops advertising about 1 s after `Connected` (auto-stop; same on
+      builds A, B and C) and the app shows no error.
 - [ ] Build B with the PoP segment and `abcd1234`: same flow succeeds;
       PoP `wrong` gives a PopMismatch message.
 

@@ -75,7 +75,7 @@ void main() {
     final states = await session.wifi
         .provision(ssid: _ssid, passphrase: _passphrase)
         .toList();
-    expect(states.last, isA<WifiConnected>());
+    expect(states.last, isA<WifiConnected>(), reason: 'states: $states');
     await session.close();
   });
 }
