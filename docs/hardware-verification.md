@@ -120,9 +120,9 @@ passed!`, and the monitor shows `Received Wi-Fi credentials`, then
 
 | Build | Android | iOS |
 |---|---|---|
-| A (sec2) | [ ] | [ ] |
-| B (sec1) | [ ] | [ ] |
-| C (sec2, long timeout) | [ ] | [ ] |
+| A (sec2) | [x] ESP32 | [ ] |
+| B (sec1) | [x] ESP32 | [ ] |
+| C (sec2, long timeout) | [x] ESP32 | [ ] |
 
 ## 5. Manual example-app checks (build C, one phone is enough)
 
@@ -165,3 +165,48 @@ Before each check, if the device was provisioned, run
 - [ ] On the Android phone, Security 2 connect (tap to session page) takes
       under 3 s. If it is slower, profile `Srp6aClient.computeProof`
       (spec target: SRP math under 1 s in release builds).
+
+## Run record
+
+### 2026-10-06: ESP32 (not S3), Pixel 8, ESP-IDF v5.4.2
+
+Board: ESP32-D0WD-V3 rev 3.0, 4 MB flash, CH340 USB-serial (the
+ESP32-S3-DevKitC-1 was not available; firmware built with
+`idf.py set-target esp32`, otherwise as in sections 1-3). Phone: Pixel 8
+(Android), debug build. iOS and the S3 run are still to do.
+
+Section 4, automated test on Android: build A 2/2, build B 2/2, build C 2/2.
+The monitor showed the expected sequence each time.
+
+Section 5, example app (builds C and B):
+
+- [x] Scan lists `PROV_184D9C` once, RSSI -47.
+- [x] QR connect: `v1.1 Security 2 (patch 1)`, endpoints include `custom-data`.
+- [x] Scan Wi-Fi lists the network; tapping fills the SSID.
+- [x] Custom data: `custom-data replied: SUCCESS`; monitor prints
+      `Received data: hello from esp_prov`.
+- [x] Wrong password: `The device dropped the session after receiving the
+      username and password (BLE transaction on prov-session failed.)`.
+- [x] Wrong passphrase: `Failed: timeout` (allowed). The board needed about
+      32 s for its 5 attempts and then reported an auth failure; the 30 s
+      default `timeout` of `WifiProvisioner.provision` expired first.
+- [x] Unknown SSID: `Failed: networkNotFound`. (The example firmware's log
+      line says "authentication failed" for reason 201; the protocol reports
+      AP not found.)
+- [x] Unplug while connecting: `Failed: deviceDisconnected`.
+- [x] Correct credentials: `Connected to P306 as 192.168.100.121`, board
+      stops about 1 s later; the app then logs `Device disconnected` (no error).
+- [x] Build B, PoP `abcd1234`: `Security 1 (patch 0)`, provisioning succeeds;
+      wrong PoP gives `The device dropped the session after receiving the
+      proof of possession`.
+
+Section 6: Security 2 BLE connect to `Secured session established` took
+2.4-2.6 s on the monitor clock (debug build), under the 3 s target.
+
+Follow-ups found:
+
+- Wi-Fi `provision` gives up while the device still reports attempts
+  remaining, so a wrong passphrase on default firmware tends to surface as
+  `timeout` instead of `authError`.
+- Example app: nothing tells the user to tap a scan result to connect with
+  the manual credentials.
