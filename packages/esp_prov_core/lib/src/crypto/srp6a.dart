@@ -28,8 +28,7 @@ final class Srp6aProof {
 /// SRP-6a exactly as ESP-IDF `esp_srp.c` (device) and esp_prov `srp6a.py`
 /// (host) implement it: RFC 5054 3072-bit group, g = 5, SHA-512.
 ///
-/// Byte conventions (verified against esp_srp.c; see
-/// docs/research/2026-10-05-esp-provisioning-facts.md):
+/// Byte conventions (verified against esp_srp.c):
 /// * `PAD(x)` = x left-padded with zeros to 384 bytes. Used for N and g in
 ///   k, for A and B in u, and for g in H(g).
 /// * `x = H(s | H(I ":" p))` with the salt bytes exactly as the device sent

@@ -1,5 +1,5 @@
 // Hardware test: needs a phone with Bluetooth and an ESP32 running the
-// wifi_prov_mgr example. See docs/hardware-verification.md.
+// wifi_prov_mgr example.
 //
 // fvm flutter test integration_test/provisioning_test.dart -d <device-id> \
 //   --dart-define=PROV_NAME=PROV_1A2B3C \

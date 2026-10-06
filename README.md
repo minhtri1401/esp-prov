@@ -117,9 +117,7 @@ older package has been unmaintained since February 2024.
 | Thread | Yes | Not documented |
 | Custom endpoints | Yes | Not documented |
 
-Source: the research notes in
-[docs/research](docs/research/2026-10-05-esp-provisioning-facts.md). As of that
-research no other Dart package implemented Security 2.
+As of October 2026 no other Dart package implemented Security 2.
 
 ## How is it tested?
 
@@ -129,8 +127,7 @@ Espressif's own [esp_prov tool](https://github.com/espressif/idf-extra-component
 so encoded messages are checked byte for byte against the reference
 implementation. On hardware, the stock `wifi_prov_mgr` example (ESP-IDF 5.4)
 has been provisioned over BLE from Android (Pixel 8), iOS and macOS with
-Security 1 and 2, using an ESP32 board; the steps and results are in the
-[hardware verification checklist](docs/hardware-verification.md).
+Security 1 and 2, using an ESP32 board.
 
 ## FAQ
 

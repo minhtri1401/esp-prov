@@ -8,3 +8,4 @@ pubspec_overrides.yaml
 .idea/
 .DS_Store
 coverage/
+docs/
