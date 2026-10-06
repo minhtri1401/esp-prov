@@ -199,6 +199,33 @@ void main() {
       },
     );
 
+    test('each new attempt failure restarts the timeout', () async {
+      // Five firmware retries can outlast the timeout as a whole; the
+      // final AuthError must still win over a timeout.
+      final (_, wifi) = await _open({
+        'prov-config': configHandler(
+          wifiStatuses: [
+            _connecting(attemptsRemaining: 3),
+            _connecting(attemptsRemaining: 3),
+            _connecting(attemptsRemaining: 2),
+            _connecting(attemptsRemaining: 2),
+            _connecting(attemptsRemaining: 1),
+            _connecting(attemptsRemaining: 1),
+            _failed(pb.WifiConnectFailedReason.AuthError),
+          ],
+        ),
+      });
+      final states = await wifi
+          .provision(
+            ssid: 'Home',
+            passphrase: 'password1',
+            timeout: const Duration(milliseconds: 50),
+            pollInterval: const Duration(milliseconds: 20),
+          )
+          .toList();
+      expect((states.last as WifiFailed).reason, WifiFailureReason.authError);
+    });
+
     test('unknown SSID ends with networkNotFound', () async {
       final (_, wifi) = await _open({
         'prov-config': configHandler(

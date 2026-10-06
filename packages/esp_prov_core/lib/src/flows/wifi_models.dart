@@ -73,7 +73,7 @@ enum WifiFailureReason {
   /// SSID not found (`WifiConnectFailedReason.WifiNetworkNotFound`).
   networkNotFound,
 
-  /// The device kept trying until `timeout` elapsed.
+  /// The device made no progress for `timeout`.
   timeout,
 
   /// The link dropped before the device reported `Connected`.

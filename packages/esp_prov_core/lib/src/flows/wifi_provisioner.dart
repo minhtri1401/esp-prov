@@ -85,6 +85,10 @@ final class WifiProvisioner {
   /// ignored; a disconnect before it yields
   /// `WifiFailed(WifiFailureReason.deviceDisconnected)`.
   ///
+  /// [timeout] bounds the wait for progress, not the whole flow: each new
+  /// [WifiAttemptFailed] restarts it, so firmware retries that together
+  /// outlast it still end in the device's own failure reason.
+  ///
   /// Throws [ArgumentError] immediately for an SSID outside 1..32 UTF-8
   /// bytes, a passphrase over 64 bytes, or a BSSID that is not 6 bytes.
   /// Device status errors arrive as [ProvStatusException] stream errors.
@@ -192,6 +196,7 @@ final class WifiProvisioner {
           final remaining = status.attemptFailed.attemptsRemaining;
           if (remaining != lastAttemptsRemaining) {
             lastAttemptsRemaining = remaining;
+            clock.reset();
             yield WifiAttemptFailed(attemptsRemaining: remaining);
           }
         }
