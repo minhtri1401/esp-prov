@@ -123,12 +123,13 @@ research no other Dart package implemented Security 2.
 
 ## How is it tested?
 
-The core has 135 tests, the BLE adapter 19, the facade 7 and the example app 4
+The core has 138 tests, the BLE adapter 19, the facade 7 and the example app 4
 widget tests. Cryptographic and protocol fixtures are generated from
 Espressif's own [esp_prov tool](https://github.com/espressif/idf-extra-components/tree/master/network_provisioning/tool/esp_prov),
 so encoded messages are checked byte for byte against the reference
-implementation. The hardware target is an ESP32-S3-DevKitC-1 running the stock
-`wifi_prov_mgr` example; the manual steps are in the
+implementation. On hardware, the stock `wifi_prov_mgr` example (ESP-IDF 5.4)
+has been provisioned over BLE from Android (Pixel 8), iOS and macOS with
+Security 1 and 2, using an ESP32 board; the steps and results are in the
 [hardware verification checklist](docs/hardware-verification.md).
 
 ## FAQ
