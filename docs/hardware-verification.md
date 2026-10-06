@@ -200,6 +200,11 @@ Section 5, example app (builds C and B):
       wrong PoP gives `The device dropped the session after receiving the
       proof of possession`.
 
+macOS (same board, macOS 27 on Apple silicon, debug): section 4 test passes
+for build A (2/2, 20 s) and build B (2/2, 21 s); the monitor shows the
+expected sequence. `fvm flutter build macos --release` succeeds. iOS was not
+run; it shares the CoreBluetooth path with macOS in universal_ble.
+
 Section 6: Security 2 BLE connect to `Secured session established` took
 2.4-2.6 s on the monitor clock (debug build), under the 3 s target.
 
