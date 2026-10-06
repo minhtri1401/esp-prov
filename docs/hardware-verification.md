@@ -120,9 +120,9 @@ passed!`, and the monitor shows `Received Wi-Fi credentials`, then
 
 | Build | Android | iOS |
 |---|---|---|
-| A (sec2) | [x] ESP32 | [x] reported |
-| B (sec1) | [x] ESP32 | [x] reported |
-| C (sec2, long timeout) | [x] ESP32 | [x] reported |
+| A (sec2) | [x] ESP32 | [x] |
+| B (sec1) | [x] ESP32 | [x] |
+| C (sec2, long timeout) | [x] ESP32 | [x] |
 
 ## 5. Manual example-app checks (build C, one phone is enough)
 
