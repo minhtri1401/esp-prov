@@ -3,8 +3,8 @@ description: >-
   Pure-Dart client for Espressif Unified Provisioning (protocomm): Security 0,
   1 and 2, Wi-Fi and Thread provisioning flows and custom endpoints.
 version: 0.1.0
-repository: https://github.com/MinhTri1401/esp_prov/tree/main/packages/esp_prov_core
-issue_tracker: https://github.com/MinhTri1401/esp_prov/issues
+repository: https://github.com/minhtri1401/esp-prov/tree/main/packages/esp_prov_core
+issue_tracker: https://github.com/minhtri1401/esp-prov/issues
 topics:
   - esp32
   - provisioning

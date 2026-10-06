@@ -16,15 +16,15 @@ filled in.
 
 ## One-time setup (repository owner)
 
-1. Create the GitHub repository `https://github.com/MinhTri1401/esp_prov`
-   (the URL in every pubspec's `repository:`), then push the branch:
+1. Create the GitHub repository `https://github.com/minhtri1401/esp-prov`
+   (the URL in every pubspec's `repository:`), then push `main`:
 
    ```bash
-   git remote add origin git@github.com:MinhTri1401/esp_prov.git
-   git push -u origin feat/esp-prov-v1
+   git remote add origin git@github.com:minhtri1401/esp-prov.git
+   git push -u origin main
    ```
 
-   Merge to `main` and confirm the `ci` workflow is green.
+   Confirm the `ci` workflow is green.
 2. In the GitHub repository settings, create the environment `pub.dev`
    (optionally with required reviewers).
 3. Create a verified publisher on pub.dev (needs a domain verified in
@@ -43,7 +43,7 @@ filled in.
    to appear on pub.dev before publishing the next.
 5. On each package's pub.dev admin page: transfer it to the verified
    publisher, then enable "Automated publishing" from GitHub Actions with
-   repository `MinhTri1401/esp_prov`, tag pattern `<package>-v{{version}}`
+   repository `minhtri1401/esp-prov`, tag pattern `<package>-v{{version}}`
    (for example `esp_prov_core-v{{version}}`), and "Require GitHub Actions
    environment" set to `pub.dev`.
 6. After the dependencies are live, score the Flutter packages:

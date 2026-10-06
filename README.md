@@ -6,7 +6,7 @@ Security 0, 1 and 2 without native SDKs, sends Wi-Fi or Thread credentials, and
 runs on Android, iOS, macOS, Windows, Linux and Web.
 
 Last updated: 2026-10-05. Licence: BSD-3-Clause, see LICENSE. Source:
-[github.com/MinhTri1401/esp_prov](https://github.com/MinhTri1401/esp_prov).
+[github.com/minhtri1401/esp-prov](https://github.com/minhtri1401/esp-prov).
 Coming to pub.dev as `esp_prov`; for now depend on it from Git or a local path.
 
 ## What is in this repository?
