@@ -187,10 +187,16 @@ class _HomePageState extends State<HomePage> {
             child: Text(_scan == null ? 'Scan' : 'Stop scan'),
           ),
           if (_busy) const LinearProgressIndicator(),
+          if (_devices.isNotEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 12),
+              child: Text('Tap a device to connect with these credentials.'),
+            ),
           for (final device in _devices)
             ListTile(
               title: Text(device.name),
               subtitle: Text('${device.id}  RSSI ${device.rssi ?? '-'}'),
+              trailing: const Icon(Icons.chevron_right),
               onTap: () => _connect(() async => device, _credentials),
             ),
         ],

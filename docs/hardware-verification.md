@@ -120,9 +120,9 @@ passed!`, and the monitor shows `Received Wi-Fi credentials`, then
 
 | Build | Android | iOS |
 |---|---|---|
-| A (sec2) | [x] ESP32 | [ ] |
-| B (sec1) | [x] ESP32 | [ ] |
-| C (sec2, long timeout) | [x] ESP32 | [ ] |
+| A (sec2) | [x] ESP32 | [x] reported |
+| B (sec1) | [x] ESP32 | [x] reported |
+| C (sec2, long timeout) | [x] ESP32 | [x] reported |
 
 ## 5. Manual example-app checks (build C, one phone is enough)
 
@@ -173,7 +173,7 @@ Before each check, if the device was provisioned, run
 Board: ESP32-D0WD-V3 rev 3.0, 4 MB flash, CH340 USB-serial (the
 ESP32-S3-DevKitC-1 was not available; firmware built with
 `idf.py set-target esp32`, otherwise as in sections 1-3). Phone: Pixel 8
-(Android), debug build. iOS and the S3 run are still to do.
+(Android), debug build. The S3 run is still to do.
 
 Section 4, automated test on Android: build A 2/2, build B 2/2, build C 2/2.
 The monitor showed the expected sequence each time.
@@ -202,16 +202,19 @@ Section 5, example app (builds C and B):
 
 macOS (same board, macOS 27 on Apple silicon, debug): section 4 test passes
 for build A (2/2, 20 s) and build B (2/2, 21 s); the monitor shows the
-expected sequence. `fvm flutter build macos --release` succeeds. iOS was not
-run; it shares the CoreBluetooth path with macOS in universal_ble.
+expected sequence. `fvm flutter build macos --release` succeeds.
+
+iOS: the repository owner reports the example working on an iPhone; no
+logs were captured in this run.
 
 Section 6: Security 2 BLE connect to `Secured session established` took
 2.4-2.6 s on the monitor clock (debug build), under the 3 s target.
 
-Follow-ups found:
+Follow-ups found (both fixed after this run):
 
-- Wi-Fi `provision` gives up while the device still reports attempts
-  remaining, so a wrong passphrase on default firmware tends to surface as
-  `timeout` instead of `authError`.
-- Example app: nothing tells the user to tap a scan result to connect with
-  the manual credentials.
+- Wi-Fi `provision` gave up while the device still reported attempts
+  remaining, so a wrong passphrase on default firmware surfaced as
+  `timeout` instead of `authError`. Each new attempt failure now restarts
+  the timeout.
+- Example app: nothing told the user to tap a scan result to connect with
+  the manual credentials. The scan list now says so.
