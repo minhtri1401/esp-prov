@@ -1,3 +1,8 @@
+## 0.1.1
+
+- Expanded README: install, platform setup, package overview, firmware
+  requirements, FAQ and absolute links.
+
 ## 0.1.0
 
 - Initial release.
