@@ -5,9 +5,9 @@ over Bluetooth LE using Espressif's Unified Provisioning protocol. It implements
 Security 0, 1 and 2 without native SDKs, sends Wi-Fi or Thread credentials, and
 runs on Android, iOS, macOS, Windows, Linux and Web.
 
-Last updated: 2026-10-05. Licence: BSD-3-Clause, see LICENSE. Source:
+Last updated: 2026-10-12. Licence: BSD-3-Clause, see LICENSE. Source:
 [github.com/minhtri1401/esp-prov](https://github.com/minhtri1401/esp-prov).
-Coming to pub.dev as `esp_prov`; for now depend on it from Git or a local path.
+It is published on pub.dev as [`esp_prov`](https://pub.dev/packages/esp_prov).
 
 ## What is in this repository?
 
@@ -16,9 +16,9 @@ non-Flutter or non-BLE setup.
 
 | Package | What it is |
 |---|---|
-| [`esp_prov`](packages/esp_prov) | Flutter entry point: scan, connect, provision. |
-| [`esp_prov_core`](packages/esp_prov_core) | Pure-Dart protocol stack with no Flutter imports. Bring your own transport. |
-| [`esp_prov_ble_universal`](packages/esp_prov_ble_universal) | BLE transport built on `universal_ble`. |
+| [`esp_prov`](packages/esp_prov) | Flutter entry point: scan, connect, provision. ([pub.dev](https://pub.dev/packages/esp_prov)) |
+| [`esp_prov_core`](packages/esp_prov_core) | Pure-Dart protocol stack with no Flutter imports. Bring your own transport. ([pub.dev](https://pub.dev/packages/esp_prov_core)) |
+| [`esp_prov_ble_universal`](packages/esp_prov_ble_universal) | BLE transport built on `universal_ble`. ([pub.dev](https://pub.dev/packages/esp_prov_ble_universal)) |
 
 Features:
 
@@ -33,7 +33,7 @@ Features:
 Add the package, grant Bluetooth permissions, then scan, connect and provision.
 The firmware sets the security scheme, so you only supply matching credentials.
 
-1. Install. Until the pub.dev release, add `esp_prov` as a Git or path dependency in `pubspec.yaml`. It needs Dart 3.13 and Flutter 3.47 or newer.
+1. Install with `flutter pub add esp_prov`. It needs Dart 3.13 and Flutter 3.47 or newer.
 2. Permissions. The library never requests them. Request Bluetooth permissions in your app before scanning, and add the manifest or `Info.plist` entries listed in the [package README](packages/esp_prov/README.md#platform-setup).
 3. Scan, connect and provision:
 
